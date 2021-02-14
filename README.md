@@ -1,3 +1,9 @@
-# DrawKit
+```
+▀██▀▀█▄                               ▀██▀  █▀   ██    ▄
+ ██   ██  ▄▄▄ ▄▄   ▄▄▄▄   ▄▄▄ ▄▄▄ ▄▄▄  ██ ▄▀    ▄▄▄  ▄██▄
+ ██    ██  ██▀ ▀▀ ▀▀ ▄██   ██  ██  █   ██▀█▄     ██   ██
+ ██    ██  ██     ▄█▀ ██    ███ ███    ██  ██    ██   ██
+▄██▄▄▄█▀  ▄██▄    ▀█▄▄▀█▀    █   █    ▄██▄  ██▄ ▄██▄  ▀█▄▀
+```
 
-A framework for creating simple OpenGL applications on macOS.
+DrawKit is a framework for creating simple OpenGL applications in macOS.
