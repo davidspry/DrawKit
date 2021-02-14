@@ -44,6 +44,11 @@ void UIComponent::setSizeFromCentre(int32_t width, int32_t height)
     setPositionWithCentre(centre);
 }
 
+void UIComponent::translate(int32_t x, int32_t y, int32_t z)
+{
+    setPositionWithCentre(centre.x + x, centre.y + y, centre.z + z);
+}
+
 void UIComponent::setPositionWithOrigin(int32_t x, int32_t y, int32_t z)
 {
     origin.x = x;

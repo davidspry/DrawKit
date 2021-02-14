@@ -29,6 +29,7 @@ public:
     virtual void setSizeFromCentre(int32_t width, int32_t height);
     
 public:
+    virtual void translate(int32_t x, int32_t y, int32_t z);
     virtual void setPositionWithOrigin(int32_t x, int32_t y, int32_t z);
     virtual void setPositionWithOrigin(const UIPoint<int32_t> & xyz);
     virtual void setPositionWithCentre(int32_t x, int32_t y, int32_t z);

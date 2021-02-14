@@ -30,7 +30,7 @@ struct RGBA
 class Colour
 {
 public:
-    Colour() = delete;
+    Colour() = default;
     Colour(const Colour & colour, uint8_t alpha);
     Colour(const Colour & A, const Colour & B, float lerpFactor);
     Colour(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255);
