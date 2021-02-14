@@ -1,0 +1,14 @@
+# DIRECTORIES
+# ===========
+DrawKit/obj/**
+bin/**
+
+# PROJECT FILES
+# =============
+*.xcworkspace
+*.xcodeproj
+
+# MACOS FILES
+# ===========
+*.DS_Store
+*.app
