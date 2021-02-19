@@ -6,17 +6,18 @@
 class RendererSketch: public DrawKit::Application
 {
 private:
-    std::array<DrawKit::Circle,    40> circles;
-    std::array<DrawKit::Rectangle, 35> rectangles;
-    std::array<DrawKit::Colour,    40> circleColours;
+    std::array<DrawKit::Circle,    15> circles;
+    std::array<DrawKit::Rectangle, 15> rectangles;
+    std::array<DrawKit::Colour,    15> circleColours;
+    std::array<DrawKit::Colour,    15> rectangleColours;
     
     float phase = 0.0f;
     
 public:
     void prepare() override
     {
-        const DrawKit::Colour red   (DrawKit::Colour::red,      165);
-        const DrawKit::Colour white (DrawKit::Colour::offwhite, 125);
+        const DrawKit::Colour red   (DrawKit::Colour::white, 55);
+        const DrawKit::Colour white (DrawKit::Colour::red,   255);
 
         for (size_t k = 0; k < rectangles.size(); ++k)
         {
@@ -25,8 +26,8 @@ public:
                 white, red, (float) k / (float) rectangles.size()
             };
             
-            uint16_t const size = 5 + k * 10;
-            rectangle.setPositionWithCentre(centre);
+            rectangleColours.at(k) = colour;
+            uint16_t const size = 30 * (unsigned int) (rectangles.size() - k) + 20;
             rectangle.setSizeFromCentre(size, size);
             rectangle.setColour(colour);
         }
@@ -35,49 +36,58 @@ public:
         {
             DrawKit::Circle & circle = circles.at(k);
             DrawKit::Colour   colour = {
-                DrawKit::Colour::blue,
-                DrawKit::Colour::white,
+                DrawKit::Colour(DrawKit::Colour::blue, 255),
+                DrawKit::Colour(DrawKit::Colour::white, 55),
                 (float) k / (float) circles.size()
             };
             
             circleColours.at(k) = colour;
-            circle.setPositionWithCentre(centre);
+            const uint32_t radius = 15 * (unsigned int) (circles.size() - k) + 10;
             circle.setNumberOfSegments(128);
             circle.setColour(colour);
-            circle.setRadius((unsigned int) (10 * (circles.size() - k) + 10));
+            circle.setRadius(radius);
         }
+
     }
     
     void update() override
     {
-        phase = phase + 0.045f;
+        phase = phase + 0.035f;
         phase = phase - static_cast<int>(phase > TWO_PI) * TWO_PI;
-        const float sin  = std::sinf(phase);
-        const float cos  = std::cosf(phase);
+        const float cos = std::cosf(phase);
         
-        DrawKit::setBackgroundColour(DrawKit::Colour(
-                                                     DrawKit::Colour::salmon,
+        DrawKit::setBackgroundColour(DrawKit::Colour(DrawKit::Colour(
+                                                     DrawKit::Colour::offwhite, DrawKit::Colour::yellow, 0.65f),
                                                      DrawKit::Colour::yellow,
                                                      std::fabsf(cos)));
         
-        for (size_t k = 0; k < circles.size(); ++k)
+        const auto wave = [&](size_t k, size_t && capacity) -> size_t
         {
-            DrawKit::Circle & circle = circles.at(k);
-            DrawKit::Colour   colour = {
-                DrawKit::Colour(DrawKit::Colour::blue, DrawKit::Colour::offwhite, 0.5f),
-                circleColours.at(k),
-                cos
-            };
-            
-            circle.setColour(colour);
-        }
+            return std::fmod((k + std::fabsf(2.0f * cos * std::tan(phase)) * capacity), capacity);
+        };
         
         for (size_t k = 0; k < rectangles.size(); ++k)
         {
+            const float sin = std::sinf(phase + k * QRTR_PI * 0.25f);
+            const size_t q = wave(k, rectangles.size());
             DrawKit::Rectangle & rectangle = rectangles.at(k);
-            rectangle.setPositionWithCentre(centre.x + sin * cos * k * 25.0f,
-                                            centre.y + sin * 1.f * k * 20.0f,
-                                            0.0f);
+            rectangle.setPositionWithCentre(centre.x * 1.5f + sin * k * size.w * 0.125f * 0.10f,
+                                            centre.y, centre.z);
+            rectangle.setColour(DrawKit::Colour(rectangleColours.at(k),
+                                                rectangleColours.at(q),
+                                                cos));
+        }
+        
+        for (size_t k = 0; k < circles.size(); ++k)
+        {
+            const float sin = std::sinf(phase + k * QRTR_PI * 0.10f);
+            DrawKit::Circle & circle = circles.at(k);
+            const size_t q = wave(k, circles.size());
+            circle.setPositionWithCentre(centre.x * 0.5f + sin * k * size.w * 0.125f * 0.10f,
+                                         centre.y        + sin * k * size.h * 0.125f * 0.05f, centre.z);
+            circle.setColour(DrawKit::Colour(circleColours.at(k),
+                                             circleColours.at(q),
+                                             cos));
         }
     }
     
@@ -105,6 +115,6 @@ int main(int argc, char *argv[])
     attr.height = 1000;
 
     DrawKit::launch(&sketch, attr, DrawKit::RendererType::OPENGL);
-
+    
     return 0;
 }

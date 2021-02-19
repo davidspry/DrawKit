@@ -1,50 +1,60 @@
-local ROOT = "../"
+local ROOTDIR = "/Users/davidspry/Library/Mobile Documents/com~apple~CloudDocs/Development/Creative Frameworks/DrawKit/"
+local PROJDIR = ROOTDIR .. "DrawKit/"
+local PROJECT = "DrawKit"
 
-workspace      (ROOT .. "DrawKit")
-architecture   "x64"
+workspace      (PROJECT)
+location       (PROJDIR)
 system         "macosx"
 systemversion  "10.15"
-configurations { "Debug", "Release" }	
+architecture   "x64"
 
-project        "DrawKit"
-location       (ROOT .. "DrawKit")
+configurations { "Debug", "Release" }
+
+project        (PROJECT)
+location       (PROJDIR)
+basedir        (ROOTDIR)
+targetdir      (ROOTDIR .. "bin/%{cfg.buildcfg}")
 kind           "WindowedApp"
+staticruntime  "off"
 toolset        "clang"
 language       "C++"
 cppdialect     "C++17"
-staticruntime  "off"
-targetdir      (ROOT .. "bin/%{cfg.buildcfg}")
 
-pchheader      "$(PROJECT_DIR)/src/DrawKit/Utilities/dk.pch"
+pchheader      (ROOTDIR .. "DrawKit/src/DrawKit/Utilities/dk.pch")
 
 sysincludedirs
 {
-	(ROOT .. "DrawKit/vendor/glfw/include"),
-	(ROOT .. "DrawKit/vendor/glad/include"),
-	(ROOT .. "DrawKit/vendor/glm")
+	(ROOTDIR .. "DrawKit/vendor/libsoundio/include"),
+	(ROOTDIR .. "DrawKit/vendor/glfw/include"),
+	(ROOTDIR .. "DrawKit/vendor/glad/include"),
+	(ROOTDIR .. "DrawKit/vendor/glm")
 }
 
 files
 {
-	(ROOT .. "DrawKit/src/**.h"),
-	(ROOT .. "DrawKit/src/**.hpp"),
-	(ROOT .. "DrawKit/src/**.cpp"),
-	(ROOT .. "DrawKit/src/**.pch"),
+	(ROOTDIR .. "DrawKit/src/**.h"),
+	(ROOTDIR .. "DrawKit/src/**.hpp"),
+	(ROOTDIR .. "DrawKit/src/**.cpp"),
+	(ROOTDIR .. "DrawKit/src/**.pch"),
 
-	(ROOT .. "DrawKit/vendor/glad/src/**.c"),
-	(ROOT .. "DrawKit/vendor/glad/include/**.h")
+	(ROOTDIR .. "DrawKit/vendor/glad/src/**.c"),
+	(ROOTDIR .. "DrawKit/vendor/glad/include/**.h")
 }
 libdirs
 {
-	(ROOT .. "DrawKit/vendor/glfw/lib-macos")
+	(ROOTDIR .. "DrawKit/vendor/libsoundio/lib-macos"),
+	(ROOTDIR .. "DrawKit/vendor/glfw/lib-macos")
 }
 
 links
 {
 	"glfw3",
+	"soundio",
 	"Cocoa.framework",
 	"IOKit.framework",
-	"OpenGL.framework"
+	"OpenGL.framework",
+	"CoreAudio.framework",
+	"AudioToolbox.framework"
 }
 
 filter         "system:macosx"
