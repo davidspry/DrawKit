@@ -1,7 +1,6 @@
 # DIRECTORIES
 # ===========
-DrawKit/obj/**
-bin/**
+Projects/**
 
 # PROJECT FILES
 # =============

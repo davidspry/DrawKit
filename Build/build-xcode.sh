@@ -1,1 +1,1 @@
-./vendor/bin/premake5 xcode4
+./vendor/bin/premake5 xcode4 --verbose
