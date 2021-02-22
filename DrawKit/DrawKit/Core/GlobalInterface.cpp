@@ -29,7 +29,32 @@ void launch(Application* application, const Window::Attributes& attributes, Rend
     getApplicationManager()->run(application, renderer, attributes);
 }
 
+void setWindowPosition(int x, int y)
+{
+    getApplicationManager()->setWindowPosition(x, y);
+}
+
 // MARK: - RENDERING INTERFACE
+
+void enableSmoothing()
+{
+    getRenderer()->enableSmoothing();
+}
+
+void disableSmoothing()
+{
+    getRenderer()->disableSmoothing();
+}
+
+void translate(float x, float y, float z)
+{
+    getRenderer()->translate(x, y, z);
+}
+
+void translate(const DrawKit::UIPoint<float> & xyz)
+{
+    getRenderer()->translate(xyz);
+}
 
 void setFrameRate(uint16_t frameRate)
 {
@@ -63,6 +88,28 @@ const Colour & getBackgroundColour()
     return getRenderer()->getClearColour();
 }
 
+// MARK: - WINDOW INTERFACE
+
+UISize<uint32_t> getWindowSize()
+{
+    const Window * const window = getApplicationManager()->getPlatformWindow();
+
+    return {
+        window->getWidth(),
+        window->getHeight()
+    };
+}
+
+uint32_t getWindowWidth()
+{
+    return getApplicationManager()->getPlatformWindow()->getHeight();
+}
+
+uint32_t getWindowHeight()
+{
+    return getApplicationManager()->getPlatformWindow()->getWidth();
+}
+
 // MARK: - DRAWING INTERFACE
 
 void draw(const Circle & circle)
@@ -90,6 +137,15 @@ void draw(const Triangle & triangle)
     const Triangle::Vertices & v   = triangle.getVertices();
 
     getRenderer()->drawTriangle(v.a.x, v.a.y, v.a.z, v.b.x, v.b.y, v.b.z, v.c.x, v.c.y, v.c.z, colour);
+}
+
+void draw(const Path & path)
+{
+    const bool & isClosed = path.isClosed();
+    const auto & vertices = path.getVertices();
+    const auto & width = path.getStrokeWidth();
+    
+    getRenderer()->drawPath(vertices, width, isClosed);
 }
 
 void drawBoundingBox(const UIComponent & component, Colour colour)
@@ -131,9 +187,9 @@ void drawRectangle(float x, float y, float z, float w, float h, Colour colour)
     getRenderer()->drawRectangle(x, y, z, w, h, colour);
 }
 
-void drawRectangleStroke(float x, float y, float w, float h, Colour colour)
+void drawRectangleStroke(float x, float y, float w, float h, float strokeWidth, Colour colour)
 {
-    getRenderer()->drawRectangleStroke(x, y, w, h, colour);
+    getRenderer()->drawRectangleStroke(x, y, w, h, strokeWidth, colour);
 }
 
 void drawTriangle(float xa, float ya, float xb, float yb, float xc, float yc, Colour colour)

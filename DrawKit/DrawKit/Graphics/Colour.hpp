@@ -36,6 +36,8 @@ class Colour
 {
 public:
     Colour() = default;
+    Colour(const RGBA & rgba);
+    Colour(const RGBA & rgba, uint8_t alpha);
     Colour(const Colour & colour, uint8_t alpha);
     Colour(const Colour & A, const Colour & B, float lerpFactor);
     Colour(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255);
@@ -47,7 +49,7 @@ public:
 
 public:
     const RGBA & getRGBA() const noexcept;
-    
+
 public:
     const static Colour random();
     

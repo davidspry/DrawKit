@@ -5,8 +5,8 @@
 #define TRIANGLE_HPP
 
 #include "dk.pch"
-#include "UITypes.h"
 #include "Rectangle.hpp"
+#include "UIComponent.hpp"
 
 namespace DrawKit {
 

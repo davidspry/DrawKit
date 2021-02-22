@@ -6,7 +6,7 @@
 
 #include <GLFW/glfw3.h>
 
-// MODIFIERS
+// MARK: - MODIFIERS
 
 #define DK_Modifier_Shift    GLFW_MOD_SHIFT
 #define DK_Modifier_Control  GLFW_MOD_CONTROL
@@ -16,7 +16,7 @@
 #define DK_Modifier_CapsLock GLFW_MOD_CAPS_LOCK
 #define DK_Modifier_NumLock  GLFW_MOD_NUM_LOCK
 
-// UPPER LETTERS
+// MARK: - UPPER LETTERS
 
 #define DK_Key_UpperA 65
 #define DK_Key_UpperB 66
@@ -45,7 +45,7 @@
 #define DK_Key_UpperY 89
 #define DK_Key_UpperZ 90
 
-// LOWER LETTERS
+// MARK: - LOWER LETTERS
 
 #define DK_Key_LowerA 97
 #define DK_Key_LowerB 98
@@ -73,5 +73,12 @@
 #define DK_Key_LowerX 120
 #define DK_Key_LowerY 121
 #define DK_Key_LowerZ 122
+
+// MARK: - NUMERIC KEYS
+
+// MARK: - NON-ALPHANUMERIC KEYS
+
+#define DK_Key_Space  32
+#define DK_Key_Enter  257
 
 #endif

@@ -6,6 +6,5 @@
 
 #include "UISize.h"
 #include "UIPoint.h"
-#include "UIComponent.hpp"
 
 #endif

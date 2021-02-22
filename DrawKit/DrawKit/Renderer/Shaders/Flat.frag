@@ -1,9 +1,9 @@
 #version 410 core
 
-in  vec4 colour;
-out vec4 fragment_colour;
+in  vec4 VertexColour;
+out vec4 FragmentColour;
 
-void main()
+void main (void)
 {
-    fragment_colour = colour;
+    FragmentColour = VertexColour;
 }

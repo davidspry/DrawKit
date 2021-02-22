@@ -26,11 +26,11 @@ public:
     virtual void keyReleased(int key, int modifiers) override {}
 
 public:
-    virtual void mouseMoved(float x, float y)        override {}
-    virtual void mouseScrolled(float x, float y)     override {}
+    virtual void mouseMoved(float x, float y) override {}
+    virtual void mouseScrolled(float x, float y) override {}
     virtual void mouseButtonPressed (int button, int modifiers) override {}
     virtual void mouseButtonReleased(int button, int modifiers) override {}
-    
+
 public:
     virtual void windowClosed() override {}
     virtual void windowDidResize() override {}
@@ -52,6 +52,9 @@ public:
 protected:
     UISize<uint32_t> size;
     UIPoint<int32_t> centre;
+    
+private:
+    UIPoint<float> cursorPosition;
 };
 
 }

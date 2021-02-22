@@ -17,6 +17,7 @@ void ApplicationManager::run(Application* application, const RendererType& rende
 
     setFrameRate(60);
     W->setRenderer(renderer);
+    W->setPosition(windowPositionX, windowPositionY);
     W->setEventResponder(application);
 
     application->windowResized(W->getWidth(), W->getHeight());
@@ -48,7 +49,7 @@ Window * ApplicationManager::createPlatformWindow(const Window::Attributes& attr
     Window * const W = Window::create(attributes);
     window = W->getGLFWWindow();
     platformWindow = W;
-
+    
     return W;
 }
 
@@ -98,6 +99,12 @@ void ApplicationManager::setFrameRate(uint16_t frameRate)
 {
     framesPerSecond = bound((int) frameRate, 1, 60);
     frameDeltaTime  = 1.0f / static_cast<float>(framesPerSecond);
+}
+
+void ApplicationManager::setWindowPosition(int32_t x, int32_t y)
+{
+    windowPositionX = x;
+    windowPositionY = y;
 }
 
 }

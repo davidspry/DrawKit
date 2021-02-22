@@ -5,7 +5,6 @@
 #define RENDERER_HPP
 
 #include "dk.pch"
-#include "UIPrimitives.h"
 
 namespace DrawKit {
 
@@ -13,11 +12,7 @@ namespace DrawKit {
 
 enum class RendererType { OPENGL };
 
-typedef struct
-{
-    float x, y, z;
-    DrawKit::RGBA rgba;
-}   vertex_t;
+/// @brief An abstract Renderer to be defined in subclass implementations.
 
 class Renderer
 {
@@ -31,7 +26,19 @@ public:
     virtual void destroy() = 0;
     virtual void beginRender() = 0;
     virtual void complRender() = 0;
+    
+// MARK: - RENDER SETTINGS
+    
+public:
+    virtual void enableSmoothing()  = 0;
+    virtual void disableSmoothing() = 0;
 
+// MARK: - TRANSFORM
+    
+public:
+    virtual void translate(const UIPoint<float> & xyz) = 0;
+    virtual void translate(float x, float y, float z = 0.0f) = 0;
+    
 // MARK: - CLEAR SCREEN
 
 public:
@@ -41,7 +48,12 @@ public:
     virtual void clear(float r, float g, float b, float a) = 0;
     virtual void setClearColour(const Colour & colour) = 0;
     virtual const Colour & getClearColour() = 0;
-    
+
+// MARK: - DRAWING PATHS
+
+public:
+    virtual void drawPath(const std::vector<vertex_colour_t> & vertices, float strokeWidth, bool pathIsClosed) = 0;
+
 // MARK: - DRAWING PRIMITIVES
 
 public:
@@ -53,7 +65,7 @@ public:
     /// @param colour The desired colour.
     /// @note  The z-coordinate will be zero.
 
-    virtual void drawCircle(float x, float y, float r, uint16_t segments, Colour colour) = 0;
+    virtual void drawCircle(float x, float y, float r, uint16_t segments, const Colour & colour) = 0;
     
     /// @brief Draw a circle at the given centre point.
     /// @param x The x-coordinate of the desired centre point.
@@ -63,7 +75,7 @@ public:
     /// @param colour The desired colour.
     /// @param segments The desired number of triangle segments to create the circle with.
 
-    virtual void drawCircle(float x, float y, float z, float r, uint16_t segments, Colour colour) = 0;
+    virtual void drawCircle(float x, float y, float z, float r, uint16_t segments, const Colour & colour) = 0;
     
     /// @brief Draw a circle at the given centre point.
     /// @param x The x-coordinate of the desired centre point.
@@ -74,7 +86,7 @@ public:
     /// @param segments The desired number of triangle segments to create the circle with.
     /// @note  The z-coordinate will be zero.
     
-    virtual void drawEllipse(float x, float y, float w, float h, uint16_t segments, Colour colour) = 0;
+    virtual void drawEllipse(float x, float y, float w, float h, uint16_t segments, const Colour & colour) = 0;
     
     /// @brief Draw a circle at the given centre point.
     /// @param x The x-coordinate of the desired centre point.
@@ -85,7 +97,7 @@ public:
     /// @param colour The desired colour.
     /// @param segments The desired number of triangle segments to create the circle with.
     
-    virtual void drawEllipse(float x, float y, float z, float w, float h, uint16_t segments, Colour colour) = 0;
+    virtual void drawEllipse(float x, float y, float z, float w, float h, uint16_t segments, const Colour & colour) = 0;
     
     /// @brief Draw a rectangle at the given origin point.
     /// @param x The x-coordate of the desired origin point.
@@ -95,7 +107,7 @@ public:
     /// @param colour The desired colour.
     /// @note  The z-coordinate will be zero.
 
-    virtual void drawRectangle(float x, float y, float w, float h, Colour colour) = 0;
+    virtual void drawRectangle(float x, float y, float w, float h, const Colour & colour) = 0;
 
     /// @brief Draw a rectangle at the given origin point.
     /// @param x The x-coordate of the desired origin point.
@@ -105,10 +117,18 @@ public:
     /// @param h The desired height in pixels.
     /// @param colour The desired colour.
 
-    virtual void drawRectangle(float x, float y, float z, float w, float h, Colour colour) = 0;
+    virtual void drawRectangle(float x, float y, float z, float w, float h, const Colour & colour) = 0;
     
-    
-    virtual void drawRectangleStroke(float x, float y, float w, float h, Colour colour) = 0;
+    /// @brief Draw the outline of a rectangle at the given origin point.
+    /// @param x The x-coordate of the desired origin point.
+    /// @param y The y-coordate of the desired origin point.
+    /// @param z The z-coordate of the desired origin point.
+    /// @param w The desired width in pixels.
+    /// @param h The desired height in pixels.
+    /// @param strokeWidth The desired stroke width.
+    /// @param colour The desired stroke colour.
+
+    virtual void drawRectangleStroke(float x, float y, float w, float h, float strokeWidth, const Colour & colour) = 0;
     
     /// @brief Draw a triangle at the given position.
     /// @param xa The x-coordinate of the first point.
@@ -122,7 +142,7 @@ public:
 
     virtual void drawTriangle (float xa, float ya,
                                float xb, float yb,
-                               float xc, float yc, Colour colour) = 0;
+                               float xc, float yc, const Colour & colour) = 0;
 
     /// @brief Draw a triangle at the given position.
     /// @param xa The x-coordinate of the first point.
@@ -138,7 +158,7 @@ public:
 
     virtual void drawTriangle (float xa, float ya, float za,
                                float xb, float yb, float zb,
-                               float xc, float yc, float zc, Colour colour) = 0;
+                               float xc, float yc, float zc, const Colour & colour) = 0;
 
 // MARK: - INITIALISATION
 

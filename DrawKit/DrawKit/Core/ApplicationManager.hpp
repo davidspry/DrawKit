@@ -29,7 +29,8 @@ public:
     
 public:
     void setFrameRate(uint16_t frameRate);
-    
+    void setWindowPosition(int32_t x, int32_t y);
+
 private:
     void matchDesiredFrameRate();
     
@@ -54,6 +55,10 @@ private:
     float frameStartTime;
     float frameDeltaTime;
     uint16_t framesPerSecond;
+    
+private:
+    int32_t windowPositionX;
+    int32_t windowPositionY;
 };
 
 }

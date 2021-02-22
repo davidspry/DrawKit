@@ -5,7 +5,7 @@
 #define RECTANGLE_HPP
 
 #include "dk.pch"
-#include "UITypes.h"
+#include "UIComponent.hpp"
 
 namespace DrawKit {
 

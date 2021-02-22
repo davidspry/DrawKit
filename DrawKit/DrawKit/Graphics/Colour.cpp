@@ -5,6 +5,17 @@
 
 namespace DrawKit {
 
+Colour::Colour(const RGBA & rgba)
+{
+    this->rgba = rgba;
+}
+
+Colour::Colour(const RGBA & rgba, uint8_t alpha)
+{
+    this->rgba   = rgba;
+    this->rgba.a = alpha;
+}
+
 Colour::Colour(const Colour & colour, uint8_t alpha)
 {
     rgba.r = colour.rgba.r;
@@ -71,7 +82,7 @@ const Colour Colour::random()
         static_cast<uint8_t>(Random::random(0, 255)),
         static_cast<uint8_t>(Random::random(0, 255)),
         static_cast<uint8_t>(Random::random(0, 255)),
-        static_cast<uint8_t>(Random::random(0, 255))
+        static_cast<uint8_t>(255)
     };
 }
 

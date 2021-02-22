@@ -5,8 +5,10 @@
 #define GLOBAL_INTERFACE_HPP
 
 #include "dk.pch"
+#include "Path.hpp"
 #include "Window.h"
 #include "Renderer.hpp"
+#include "UIPrimitives.h"
 #include "Application.hpp"
 #include "ApplicationManager.hpp"
 
@@ -22,11 +24,17 @@ ApplicationManager * const getApplicationManager();
 
 void launch(Application* application, const Window::Attributes& attributes, RendererType && renderer);
 
+void setWindowPosition(int x, int y);
+
 // MARK: - RENDERING INTERFACE
 
 void enableSmoothing();
 
 void disableSmoothing();
+
+void translate(float x, float y, float z = 0.0f);
+
+void translate(const DrawKit::UIPoint<float> & xyz);
 
 void setFrameRate(uint16_t frameRate);
 
@@ -39,6 +47,14 @@ void setBackgroundColour(const Colour && colour);
 void setBackgroundColour(uint8_t r, uint8_t g, uint8_t b);
 
 const Colour & getBackgroundColour();
+
+// MARK: - WINDOW INTERFACE
+
+UISize<uint32_t> getWindowSize();
+
+uint32_t getWindowWidth();
+
+uint32_t getWindowHeight();
 
 // MARK: - DRAWING INTERFACE
 
@@ -56,6 +72,11 @@ void draw(const Rectangle & rectangle);
 /// @param triangle The triangle to be drawn.
 
 void draw(const Triangle & triangle);
+
+/// @brief Draw the given path.
+/// @param path The path to be drawn.
+
+void draw(const Path & path);
 
 /// @brief Draw the given UIComponent's bounding box.
 /// @param component The component whose bounding box should be drawn.
@@ -75,7 +96,7 @@ void drawRectangle(float x, float y, float w, float h, Colour colour);
 
 void drawRectangle(float x, float y, float z, float w, float h, Colour colour);
 
-void drawRectangleStroke(float x, float y, float w, float h, Colour colour);
+void drawRectangleStroke(float x, float y, float w, float h, float strokeWidth, Colour colour);
 
 void drawTriangle(float xa, float ya, float xb, float yb, float xc, float yc, Colour colour);
 

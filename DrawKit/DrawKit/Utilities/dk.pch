@@ -62,6 +62,10 @@
 
 // MARK: - DrawKit Utilities
 
+// TYPES
+#include "UITypes.h"
+#include "RendererTypes.h"
+
 // INPUTS
 #include "KeyCodes.h"
 
