@@ -86,6 +86,32 @@ const Colour Colour::random()
     };
 }
 
+const Colour Colour::shade(const Colour & colour, int16_t index, uint8_t contrast)
+{
+    float const factor = 0.025f * contrast;
+    float const indexf = static_cast<float>(std::abs(index));
+    
+    if (index < 0)
+    {
+        Colour source = colour;
+
+        source.darken(factor * indexf);
+        
+        return source;
+    }
+    
+    if (index > 0)
+    {
+        Colour source = colour;
+        
+        source.lighten(factor * indexf);
+        
+        return source;
+    }
+    
+    return colour;
+}
+
 // MARK: - Constants
 
 const Colour Colour::lightBlack = { 15,  15,  15, 255};

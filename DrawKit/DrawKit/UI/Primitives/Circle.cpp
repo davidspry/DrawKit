@@ -5,14 +5,14 @@
 
 namespace DrawKit {
 
-Circle::Circle(const int32_t x, const int32_t y, const uint32_t radius, const uint16_t segments):
+Circle::Circle(const float x, const float y, const float radius, const uint16_t segments):
 UIComponent(x, y, 0, 2.0f * radius, 2.0f * radius)
 {
     this->radius   = radius;
     this->segments = segments;
 }
 
-const uint32_t & Circle::getRadius() const
+const float & Circle::getRadius() const
 {
     return radius;
 }
@@ -22,7 +22,7 @@ const uint16_t & Circle::getNumberOfSegments() const
     return segments;
 }
 
-void Circle::setRadius(uint32_t circleRadius)
+void Circle::setRadius(float circleRadius)
 {
     radius = circleRadius;
     
@@ -34,7 +34,7 @@ void Circle::setNumberOfSegments(uint16_t circleSegments)
     segments = circleSegments;
 }
 
-void Circle::setSizeFromOrigin(int32_t width, int32_t height)
+void Circle::setSizeFromOrigin(float width, float height)
 {
     UIComponent::setSizeFromOrigin(width, height);
 
@@ -42,7 +42,7 @@ void Circle::setSizeFromOrigin(int32_t width, int32_t height)
     radius = radius / 2;
 }
 
-void Circle::setSizeFromCentre(int32_t width, int32_t height)
+void Circle::setSizeFromCentre(float width, float height)
 {
     UIComponent::setSizeFromCentre(width, height);
 

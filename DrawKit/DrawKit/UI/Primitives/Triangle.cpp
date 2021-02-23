@@ -5,7 +5,7 @@
 
 namespace DrawKit {
 
-Triangle::Triangle(const int32_t x, const int32_t y, const int32_t width, const int32_t height):
+Triangle::Triangle(const float x, const float y, const float width, const float height):
 UIComponent(x, y, 0, width, height)
 {
     vertices.a.x = static_cast<float>(centre.x) - static_cast<float>(width)  * 0.5f;
@@ -37,9 +37,9 @@ Rectangle Triangle::computeBoundingBox(const Triangle::Vertices & vertices)
     const auto z = std::minmax({vertices.a.z, vertices.b.z, vertices.c.z});
     
     r.setSizeFromCentre(x.second - x.first, y.second - y.first);
-    r.setPositionWithCentre(static_cast<int32_t>(midpoint(x.first, x.second)),
-                            static_cast<int32_t>(midpoint(y.first, y.second)),
-                            static_cast<int32_t>(midpoint(z.first, z.second)));
+    r.setPositionWithCentre(static_cast<float>(midpoint(x.first, x.second)),
+                            static_cast<float>(midpoint(y.first, y.second)),
+                            static_cast<float>(midpoint(z.first, z.second)));
 
     return r;
 }
@@ -60,7 +60,7 @@ void Triangle::setVertices(const UIPoint<float> & a, const UIPoint<float> & b, c
     UIComponent::setSizeFromCentre(r.getSize());
 }
 
-void Triangle::setSizeFromOrigin(int32_t width, int32_t height)
+void Triangle::setSizeFromOrigin(float width, float height)
 {
     UISize<float> const delta = {
         static_cast<float>((int32_t) getSize().w - width ),
@@ -76,12 +76,12 @@ void Triangle::setSizeFromOrigin(int32_t width, int32_t height)
     UIComponent::setSizeFromOrigin(width, height);
 }
 
-void Triangle::setSizeFromOrigin(const UISize<uint32_t> & size)
+void Triangle::setSizeFromOrigin(const UISize<float> & size)
 {
     setSizeFromCentre(size.w, size.h);
 }
 
-void Triangle::setSizeFromCentre(int32_t width, int32_t height)
+void Triangle::setSizeFromCentre(float width, float height)
 {
     UISize<float> const delta = {
         static_cast<float>((int) getSize().w - (int) width ) * 0.5f,
@@ -102,17 +102,17 @@ void Triangle::setSizeFromCentre(int32_t width, int32_t height)
     UIComponent::setSizeFromCentre(width, height);
 }
 
-void Triangle::setSizeFromCentre(const UISize<uint32_t> & size)
+void Triangle::setSizeFromCentre(const UISize<float> & size)
 {
     setSizeFromCentre(size.w, size.h);
 }
 
-void Triangle::setPositionWithOrigin(int32_t x, int32_t y, int32_t z)
+void Triangle::setPositionWithOrigin(float x, float y, float z)
 {
-    UIPoint<int32_t> const delta = {
-        static_cast<int32_t>(origin.x) - x,
-        static_cast<int32_t>(origin.y) - y,
-        static_cast<int32_t>(origin.z) - z
+    UIPoint<float> const delta = {
+        static_cast<float>(origin.x) - x,
+        static_cast<float>(origin.y) - y,
+        static_cast<float>(origin.z) - z
     };
     
     for (auto & vertex : { & vertices.a, & vertices.b, & vertices.c })
@@ -125,17 +125,17 @@ void Triangle::setPositionWithOrigin(int32_t x, int32_t y, int32_t z)
     UIComponent::setPositionWithOrigin(x, y, z);
 }
 
-void Triangle::setPositionWithOrigin(const UIPoint<int32_t> & xyz)
+void Triangle::setPositionWithOrigin(const UIPoint<float> & xyz)
 {
     setPositionWithOrigin(xyz.x, xyz.y, xyz.z);
 }
 
-void Triangle::setPositionWithCentre(int32_t x, int32_t y, int32_t z)
+void Triangle::setPositionWithCentre(float x, float y, float z)
 {
-    UIPoint<int32_t> const delta = {
-        x - static_cast<int32_t>(centre.x),
-        y - static_cast<int32_t>(centre.y),
-        z - static_cast<int32_t>(centre.z)
+    UIPoint<float> const delta = {
+        x - static_cast<float>(centre.x),
+        y - static_cast<float>(centre.y),
+        z - static_cast<float>(centre.z)
     };
     
     for (auto & vertex : { & vertices.a, & vertices.b, & vertices.c })
@@ -148,7 +148,7 @@ void Triangle::setPositionWithCentre(int32_t x, int32_t y, int32_t z)
     UIComponent::setPositionWithCentre(x, y, z);
 }
 
-void Triangle::setPositionWithCentre(const UIPoint<int32_t> & xyz)
+void Triangle::setPositionWithCentre(const UIPoint<float> & xyz)
 {
     setPositionWithCentre(xyz.x, xyz.y, xyz.z);
 }

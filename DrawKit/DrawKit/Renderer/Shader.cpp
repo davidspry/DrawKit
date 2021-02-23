@@ -67,7 +67,12 @@ void Shader::setUniform(std::string_view handle, const DrawKit::RGBA & value)
 
 void Shader::setUniform(std::string_view handle, const glm::vec2 & value)
 {
-    glUniform2fv(glGetUniformLocation(rendererID, handle.data()), 1, &(value[0]));
+    glUniform2fv(glGetUniformLocation(rendererID, handle.data()), 1, glm::value_ptr(value));
+}
+
+void Shader::setUniform(std::string_view handle, const glm::vec3 & value)
+{
+    glUniform3fv(glGetUniformLocation(rendererID, handle.data()), 1, glm::value_ptr(value));
 }
 
 void Shader::setUniform(std::string_view handle, const glm::mat4 & value)

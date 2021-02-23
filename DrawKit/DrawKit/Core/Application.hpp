@@ -43,15 +43,15 @@ public:
 
     void windowResized(uint32_t width, uint32_t height)
     {
-        size.w   = width;
-        size.h   = height;
+        size.w   = static_cast<float>(width);
+        size.h   = static_cast<float>(height);
         centre.x = static_cast<float>(size.w) * 0.5f;
         centre.y = static_cast<float>(size.h) * 0.5f;
     }
 
 protected:
-    UISize<uint32_t> size;
-    UIPoint<int32_t> centre;
+    UISize <float> size;
+    UIPoint<float> centre;
     
 private:
     UIPoint<float> cursorPosition;

@@ -12,25 +12,25 @@ namespace DrawKit {
 class Circle: public UIComponent
 {
 public:
-    Circle(const int32_t  x = 0,
-           const int32_t  y = 0,
-           const uint32_t radius = 50,
+    Circle(const float x = 0.0f,
+           const float y = 0.0f,
+           const float radius = 50.0f,
            const uint16_t segments = 64);
 
 public:
-    const uint32_t & getRadius() const;
+    const float & getRadius() const;
     const uint16_t & getNumberOfSegments() const;
 
 public:
-    void setRadius(uint32_t circleRadius);
+    void setRadius(float circleRadius);
     void setNumberOfSegments(uint16_t circleSegments);
     
 public:
-    void setSizeFromOrigin(int32_t width, int32_t height) override;
-    void setSizeFromCentre(int32_t width, int32_t height) override;
+    void setSizeFromOrigin(float width, float height) override;
+    void setSizeFromCentre(float width, float height) override;
     
 private:
-    uint32_t radius;
+    float radius;
     uint16_t segments;
 };
 

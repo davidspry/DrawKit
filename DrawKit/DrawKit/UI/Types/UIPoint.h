@@ -44,10 +44,12 @@ struct UIPoint
     {
         return {p.x * q.x, p.y * q.y, p.z * q.z};
     }
-    
-    friend UIPoint<T> operator * (const UIPoint<T> & p, const T & k)
+
+    friend UIPoint<T> operator * (const UIPoint<T> & p, const float & k)
     {
-        return {p.x * k, p.y * k, p.z * k};
+        return {static_cast<T>(static_cast<float>(p.x) * k),
+                static_cast<T>(static_cast<float>(p.y) * k),
+                static_cast<T>(static_cast<float>(p.z) * k)};
     }
     
     friend UIPoint<T> operator / (const UIPoint<T> & p, const UIPoint<T> & q)

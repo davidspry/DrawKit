@@ -12,7 +12,7 @@ class Path
 {
 public:
     Path();
-    
+
 public:
     void clear();
     void close();

@@ -51,7 +51,17 @@ public:
     const RGBA & getRGBA() const noexcept;
 
 public:
+    /// @brief Compute an opaque colour with random RGB components.
+    
     const static Colour random();
+    
+    /// @brief Compute a shade of the given colour.
+    /// @param colour The median colour of the shade range to be computed.
+    /// @param index The index of the shade to be computed, where zero is the given colour,
+    /// negative indices are darker than the given colour, and positive indices are lighter than the given colour.
+    /// @param contrast The desired contrast between each shade.
+    
+    const static Colour shade(const Colour & colour, int16_t index, uint8_t contrast);
     
 public:
     const static Colour lightBlack;

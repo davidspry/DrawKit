@@ -5,11 +5,6 @@
 #ifndef DRAWKIT_PCH
 #define DRAWKIT_PCH
 
-#define  TWO_PI 6.283185307180
-#define      PI 3.141592653590
-#define HALF_PI 1.570796326790
-#define QRTR_PI 0.785398163397
-
 // MARK: - C++ Standard Library
 
 // TYPES
@@ -26,6 +21,7 @@
 #include <numeric>
 
 // DATA STRUCTURES
+#include <stack>
 #include <array>
 #include <vector>
 #include <unordered_map>
@@ -55,10 +51,18 @@
 
 // MARK: - GLM Library
 
+// GLM VECTORISATION
+#define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
+#define GLM_FORCE_SIMD_AVX2
+
 // GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+// MARK: - Constants
+
+#include "Constants.h"
 
 // MARK: - DrawKit Utilities
 

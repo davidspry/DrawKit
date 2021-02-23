@@ -56,7 +56,7 @@ public:
 public:
     inline static void glfwErrorCallback(int error, const char* description)
     {
-        DK_LOG("GLFW", "ERROR #", error, ": ", description);
+        DK_LOG("GLFW", "ERROR #" + std::to_string(error) + ":", description);
     }
 
 protected:

@@ -46,14 +46,64 @@ void disableSmoothing()
     getRenderer()->disableSmoothing();
 }
 
+void scale(float scaleFactor)
+{
+    getRenderer()->scale(scaleFactor, scaleFactor, scaleFactor);
+}
+
+void scale(glm::vec3 scaleFactor)
+{
+    getRenderer()->scale(scaleFactor.x, scaleFactor.y, scaleFactor.z);
+}
+
+void rotateByRadians(float radians, Axis axis)
+{
+    getRenderer()->rotate(radians,
+                          static_cast<float>(axis == Axis::X),
+                          static_cast<float>(axis == Axis::Y),
+                          static_cast<float>(axis == Axis::Z));
+}
+
+void rotateByRadians(float radians, float x, float y, float z)
+{
+    getRenderer()->rotate(radians, x, y, z);
+}
+
+void rotateByDegrees(float degrees, Axis axis)
+{
+    float const radians = glm::radians(degrees);
+    
+    getRenderer()->rotate(radians,
+                          static_cast<float>(axis == Axis::X),
+                          static_cast<float>(axis == Axis::Y),
+                          static_cast<float>(axis == Axis::Z));
+}
+
+void rotateByDegrees(float degrees, float x, float y, float z)
+{
+    float const radians = glm::radians(degrees);
+    
+    getRenderer()->rotate(radians, x, y, z);
+}
+
 void translate(float x, float y, float z)
 {
     getRenderer()->translate(x, y, z);
 }
 
-void translate(const DrawKit::UIPoint<float> & xyz)
+void translate(const UIPoint<float> & xyz)
 {
-    getRenderer()->translate(xyz);
+    getRenderer()->translate(xyz.x, xyz.y, xyz.z);
+}
+
+void pushMatrix()
+{
+    getRenderer()->pushMatrix();
+}
+
+void popMatrix()
+{
+    getRenderer()->popMatrix();
 }
 
 void setFrameRate(uint16_t frameRate)
@@ -102,12 +152,12 @@ UISize<uint32_t> getWindowSize()
 
 uint32_t getWindowWidth()
 {
-    return getApplicationManager()->getPlatformWindow()->getHeight();
+    return getApplicationManager()->getPlatformWindow()->getWidth();
 }
 
 uint32_t getWindowHeight()
 {
-    return getApplicationManager()->getPlatformWindow()->getWidth();
+    return getApplicationManager()->getPlatformWindow()->getHeight();
 }
 
 // MARK: - DRAWING INTERFACE
@@ -159,12 +209,22 @@ void drawBoundingBox(const UIComponent & component, Colour colour)
 
 void drawCircle(float x, float y, float r, uint16_t segments, Colour colour)
 {
-    getRenderer()->drawCircle(x, y, r, segments, colour);
+    getRenderer()->drawCircle(x, y, 0.0f, r, segments, colour);
 }
 
 void drawCircle(float x, float y, float z, float r, uint16_t segments, Colour colour)
 {
     getRenderer()->drawCircle(x, y, z, r, segments, colour);
+}
+
+void drawCircleStroke(float x, float y, float r, float strokeWidth, uint16_t segments, Colour colour)
+{
+    drawCircleStroke(x, y, 0.0f, r, strokeWidth, segments, colour);
+}
+
+void drawCircleStroke(float x, float y, float z, float r, float strokeWidth, uint16_t segments, Colour colour)
+{
+    getRenderer()->drawCircleStroke(x, y, z, r, strokeWidth, segments, colour);
 }
 
 void drawEllipse(float x, float y, float w, float h, uint16_t segments, Colour colour)
@@ -179,7 +239,7 @@ void drawEllipse(float x, float y, float z, float w, float h, uint16_t segments,
 
 void drawRectangle(float x, float y, float w, float h, Colour colour)
 {
-    getRenderer()->drawRectangle(x, y, w, h, colour);
+    getRenderer()->drawRectangle(x, y, 0.0f, w, h, colour);
 }
 
 void drawRectangle(float x, float y, float z, float w, float h, Colour colour)
@@ -189,12 +249,17 @@ void drawRectangle(float x, float y, float z, float w, float h, Colour colour)
 
 void drawRectangleStroke(float x, float y, float w, float h, float strokeWidth, Colour colour)
 {
-    getRenderer()->drawRectangleStroke(x, y, w, h, strokeWidth, colour);
+    drawRectangleStroke(x, y, 0.0f, w, h, strokeWidth, colour);
+}
+
+void drawRectangleStroke(float x, float y, float z, float w, float h, float strokeWidth, Colour colour)
+{
+    getRenderer()->drawRectangleStroke(x, y, z, w, h, strokeWidth, colour);
 }
 
 void drawTriangle(float xa, float ya, float xb, float yb, float xc, float yc, Colour colour)
 {
-    getRenderer()->drawTriangle(xa, ya, xb, yb, xc, yc, colour);
+    drawTriangle(xa, ya, 0.0f, xb, yb, 0.0f, xc, yc, 0.0f, colour);
 }
 
 void drawTriangle(float xa, float ya, float za, float xb, float yb, float zb, float xc, float yc, float zc, Colour colour)

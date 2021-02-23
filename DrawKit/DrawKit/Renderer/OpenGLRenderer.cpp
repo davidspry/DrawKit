@@ -15,6 +15,39 @@ OpenGLRenderer::~OpenGLRenderer()
     
 }
 
+// MARK: - RENDERER INITIALISATION
+
+void OpenGLRenderer::initialise()
+{
+    DK_ASSERT(gladLoadGL(), "GLAD could not be loaded.");
+
+    createDefaultShaders();
+    createDefaultMatrix();
+
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &ibo);
+
+    glEnable(GL_MULTISAMPLE);
+}
+
+void OpenGLRenderer::createDefaultShaders()
+{
+    flatShader = Shader::create("Flat.vert", "Flat.frag");
+    lineShader = Shader::create("Line.vert", "Line.frag", "Line.geom");
+}
+
+void OpenGLRenderer::createDefaultMatrix()
+{
+    const float W = static_cast<float>(getWindowWidth());
+    const float H = static_cast<float>(getWindowHeight());
+
+    defaultMatrix.setProjectionBounds(W, H);
+    defaultMatrix.useOrthographicProjection();
+}
+
 void OpenGLRenderer::destroy()
 {
     glDisableVertexAttribArray(0);
@@ -22,9 +55,11 @@ void OpenGLRenderer::destroy()
     glDeleteBuffers(1, &vbo);
     glDeleteBuffers(1, &ibo);
     glBindVertexArray(0);
-    delete flatShader;
 
-    DK_LOG("OpenGLRenderer", "Destroyed");
+    delete flatShader;
+    delete lineShader;
+
+    DK_LOG("OpenGLRenderer", "Destructed");
 }
 
 // MARK: - RENDER STAGE
@@ -34,44 +69,30 @@ void OpenGLRenderer::beginRender()
     const float W = static_cast<float>(getWindowWidth());
     const float H = static_cast<float>(getWindowHeight());
 
-    ortho = glm::ortho(-0.5f * W, +0.5f * W, +0.5f * H, -0.5f * H, -10000.0f, 10000.0f);
-    model = glm::translate(model, transform);
+    defaultMatrix.setProjectionBounds(W, H);
 
-    static float
-    degrees = 0.0f;
-    degrees = degrees + 2.0f;
-    degrees = std::fmod(degrees, 360.0f);
-    
-//    camera = glm::translate(camera, glm::vec3(0.f, 0.f, 0.0f));
-//    camera = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f)) * camera;
-//    ortho = glm::rotate(ortho, glm::radians(degrees), glm::vec3(0.0f, 1.0f, 0.0f));
+    matrices.emplace(defaultMatrix);
 
-    // ISOMETRIC
-//    ortho = glm::rotate(ortho, glm::radians(35.264f), glm::vec3(1.0f, 0.0f, 0.0f));
-//    ortho = glm::rotate(ortho, glm::radians(45.000f), glm::vec3(0.0f, 0.0f, 1.0f));
-    
-    mvpMatrix = ortho * model;
-    
     glViewport(0, 0, W, H);
-    
+
     clear();
 }
 
 void OpenGLRenderer::complRender()
 {
-    
+    popMatrix();
 }
 
 // MARK: - RENDER SETTINGS
 
 void OpenGLRenderer::enableSmoothing()
 {
+    glBlendFunc    (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendEquation(GL_FUNC_ADD);
     glHint  (GL_LINE_SMOOTH_HINT, GL_NICEST);
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_POLYGON_SMOOTH);
     glEnable(GL_BLEND);
-    glBlendEquation(GL_FUNC_ADD);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void OpenGLRenderer::disableSmoothing()
@@ -83,26 +104,31 @@ void OpenGLRenderer::disableSmoothing()
 
 // MARK: - TRANSFORM
 
-void OpenGLRenderer::translate(const UIPoint<float> & xyz)
+void OpenGLRenderer::pushMatrix()
 {
-    transform.x = xyz.x - 0.5f * getWindowWidth();
-    transform.y = xyz.y - 0.5f * getWindowHeight();
-    transform.z = xyz.z;
+    const auto & matrix = matrices.top();
 
-    model = glm::translate(glm::mat4(1.0f), transform);
+    matrices.emplace(matrix);
+}
 
-    mvpMatrix = ortho * model;
+void OpenGLRenderer::popMatrix()
+{
+    matrices.pop();
+}
+
+void OpenGLRenderer::scale(float x, float y, float z)
+{
+    matrices.top().scale(x, y, z);
+}
+
+void OpenGLRenderer::rotate(float radians, float x, float y, float z)
+{
+    matrices.top().rotate(radians, x, y, z);
 }
 
 void OpenGLRenderer::translate(float x, float y, float z)
 {
-    transform.x = x - 0.5f * getWindowWidth();
-    transform.y = y - 0.5f * getWindowHeight();
-    transform.z = z;
-
-    model = glm::translate(glm::mat4(1.0f), transform);
-
-    mvpMatrix = ortho * model;
+    matrices.top().translate(x, y, z);
 }
 
 // MARK: - CLEAR SCREEN
@@ -181,7 +207,7 @@ void OpenGLRenderer::drawPath(const std::vector<vertex_colour_t> & vertices, flo
     lineShader->setUniform("MiterLimit",  0.75f);
     lineShader->setUniform("Thickness",   strokeWidth);
     lineShader->setUniform("Viewport",    glm::vec2(W, H));
-    lineShader->setUniform("ModelViewProjection", mvpMatrix);
+    lineShader->setUniform("ModelViewProjection", matrices.top().getMVPMatrix());
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_colour_t) * VERTICES, vertices.data(), GL_STATIC_DRAW);
@@ -199,11 +225,6 @@ void OpenGLRenderer::drawPath(const std::vector<vertex_colour_t> & vertices, flo
 }
 
 // MARK: - DRAWING PRIMITIVES
-
-void OpenGLRenderer::drawCircle(float x, float y, float r, uint16_t segments, const Colour & colour)
-{
-    drawCircle(x, y, 0.0f, r, segments, colour);
-}
 
 void OpenGLRenderer::drawCircle(float x, float y, float z, float r, uint16_t segments, const Colour & colour)
 {
@@ -243,7 +264,7 @@ void OpenGLRenderer::drawCircle(float x, float y, float z, float r, uint16_t seg
     }
 
     flatShader->use();
-    flatShader->setUniform("ModelViewProjection", mvpMatrix);
+    flatShader->setUniform("ModelViewProjection", matrices.top().getMVPMatrix());
     flatShader->setUniform("Colour", colour.getRGBA());
     
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -258,9 +279,61 @@ void OpenGLRenderer::drawCircle(float x, float y, float z, float r, uint16_t seg
     glDrawElements(GL_TRIANGLES, INDICES, GL_UNSIGNED_INT, nullptr);
 }
 
-void OpenGLRenderer::drawEllipse(float x, float y, float w, float h, uint16_t segments, const Colour & colour)
+void OpenGLRenderer::drawCircleStroke(float x, float y, float z, float r, float strokeWidth, uint16_t segments, const Colour & colour)
 {
-    drawEllipse(x, y, 0.0f, w, h, segments, colour);
+    index_t indices [segments * 4];
+    vertex_colour_t vertices [segments];
+    
+    const float W = static_cast<float>(getWindowWidth());
+    const float H = static_cast<float>(getWindowHeight());
+
+    UIPoint<float> point = { r, 0.0f, z };
+
+    const float theta = TWO_PI / static_cast<float>(segments);
+    const float cos = std::cosf(theta);
+    const float sin = std::sinf(theta);
+
+    for (size_t k = 0; k < segments; ++k)
+    {
+        vertices[k] = {
+            x + point.x,
+            y + point.y,
+            z + point.z,
+            colour.getRGBA()
+        };
+        
+        const float t = point.x;
+        point.x = cos * point.x - sin * point.y;
+        point.y = cos * point.y + sin * t;
+    }
+    
+    for (size_t k = 0; k < segments; ++k)
+    {
+        indices[k * 4 + 0] = (segments + k - 1) % segments;
+        indices[k * 4 + 1] = (segments + k - 0) % segments;
+        indices[k * 4 + 2] = (segments + k + 1) % segments;
+        indices[k * 4 + 3] = (segments + k + 2) % segments;
+    }
+
+    lineShader->use();
+    lineShader->setUniform("MiterLimit",  0.75f);
+    lineShader->setUniform("Thickness",   strokeWidth);
+    lineShader->setUniform("Viewport",    glm::vec2(W, H));
+    lineShader->setUniform("ModelViewProjection", matrices.top().getMVPMatrix());
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex_colour_t), (void *) 0);
+    glEnableVertexAttribArray(0);
+    
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(vertex_colour_t), (void *) sizeof(vertex_t));
+    glEnableVertexAttribArray(1);
+    
+    glDrawElements(GL_LINES_ADJACENCY, segments * 4, GL_UNSIGNED_INT, nullptr);
 }
 
 void OpenGLRenderer::drawEllipse(float x, float y, float z, float w, float h, uint16_t segments, const Colour & colour)
@@ -292,7 +365,7 @@ void OpenGLRenderer::drawEllipse(float x, float y, float z, float w, float h, ui
     }
 
     flatShader->use();
-    flatShader->setUniform("ModelViewProjection", mvpMatrix);
+    flatShader->setUniform("ModelViewProjection", matrices.top().getMVPMatrix());
     flatShader->setUniform("Colour", colour.getRGBA());
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -305,11 +378,6 @@ void OpenGLRenderer::drawEllipse(float x, float y, float z, float w, float h, ui
     glEnableVertexAttribArray(0);
     
     glDrawElements(GL_TRIANGLES, INDICES, GL_UNSIGNED_INT, nullptr);
-}
-
-void OpenGLRenderer::drawRectangle(float x, float y, float w, float h, const Colour & colour)
-{
-    drawRectangle(x, y, 0.0f, w, h, colour);
 }
 
 void OpenGLRenderer::drawRectangle(float x, float y, float z, float w, float h, const Colour & colour)
@@ -326,7 +394,7 @@ void OpenGLRenderer::drawRectangle(float x, float y, float z, float w, float h, 
     constexpr static std::array<uint32_t, 6> indices = {0, 1, 2, 0, 2, 3};
 
     flatShader->use();
-    flatShader->setUniform("ModelViewProjection", mvpMatrix);
+    flatShader->setUniform("ModelViewProjection", matrices.top().getMVPMatrix());
     flatShader->setUniform("Colour", colour.getRGBA());
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -341,17 +409,17 @@ void OpenGLRenderer::drawRectangle(float x, float y, float z, float w, float h, 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
-void OpenGLRenderer::drawRectangleStroke(float x, float y, float w, float h, float strokeWidth, const Colour & colour)
+void OpenGLRenderer::drawRectangleStroke(float x, float y, float z, float w, float h, float strokeWidth, const Colour & colour)
 {
-    const UIPoint<float> origin = { x, y };
+    const UIPoint<float> origin = { x, y, z };
     const float W = static_cast<float>(getWindowWidth());
     const float H = static_cast<float>(getWindowHeight());
 
     const std::array<vertex_colour_t, 4> vertices = {{
-        { origin.x,     origin.y,     0.0f, colour.getRGBA() },
-        { origin.x + w, origin.y,     0.0f, colour.getRGBA() },
-        { origin.x + w, origin.y + h, 0.0f, colour.getRGBA() },
-        { origin.x,     origin.y + h, 0.0f, colour.getRGBA() }
+        { origin.x,     origin.y,     origin.z, colour.getRGBA() },
+        { origin.x + w, origin.y,     origin.z, colour.getRGBA() },
+        { origin.x + w, origin.y + h, origin.z, colour.getRGBA() },
+        { origin.x,     origin.y + h, origin.z, colour.getRGBA() }
     }};
     
     constexpr std::array<index_t, 16> indices = {
@@ -365,7 +433,7 @@ void OpenGLRenderer::drawRectangleStroke(float x, float y, float w, float h, flo
     lineShader->setUniform("MiterLimit",  0.75f);
     lineShader->setUniform("Thickness",   strokeWidth);
     lineShader->setUniform("Viewport",    glm::vec2(W, H));
-    lineShader->setUniform("ModelViewProjection", mvpMatrix);
+    lineShader->setUniform("ModelViewProjection", matrices.top().getMVPMatrix());
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
@@ -382,11 +450,6 @@ void OpenGLRenderer::drawRectangleStroke(float x, float y, float w, float h, flo
     glDrawElements(GL_LINES_ADJACENCY, indices.size(), GL_UNSIGNED_INT, nullptr);
 }
 
-void OpenGLRenderer::drawTriangle(float xa, float ya, float xb, float yb, float xc, float yc, const Colour & colour)
-{
-    drawTriangle(xa, ya, 0.0f, xb, yb, 0.0f, xc, yc, 0.0f, colour);
-}
-
 void OpenGLRenderer::drawTriangle(float xa, float ya, float za,
                                   float xb, float yb, float zb,
                                   float xc, float yc, float zc, const Colour & colour)
@@ -398,7 +461,7 @@ void OpenGLRenderer::drawTriangle(float xa, float ya, float za,
     }};
 
     flatShader->use();
-    flatShader->setUniform("ModelViewProjection", mvpMatrix);
+    flatShader->setUniform("ModelViewProjection", matrices.top().getMVPMatrix());
     flatShader->setUniform("Colour", colour.getRGBA());
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -408,41 +471,6 @@ void OpenGLRenderer::drawTriangle(float xa, float ya, float za,
     glEnableVertexAttribArray(0);
     
     glDrawArrays(GL_TRIANGLES, 0, 3);
-}
-
-// MARK: - RENDERER INITIALISATION
-
-void OpenGLRenderer::initialise()
-{
-    DK_ASSERT(gladLoadGL(), "GLAD could not be loaded.");
-
-    createDefaultShaders();
-    createDefaultTransform();
-
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &ibo);
-
-    glEnable(GL_MULTISAMPLE);
-}
-
-void OpenGLRenderer::createDefaultShaders()
-{
-    flatShader = Shader::create("Flat.vert", "Flat.frag");
-    lineShader = Shader::create("Line.vert", "Line.frag", "Line.geom");
-}
-
-void OpenGLRenderer::createDefaultTransform()
-{
-    const float W = static_cast<float>(getWindowWidth());
-    const float H = static_cast<float>(getWindowHeight());
-
-    ortho = glm::ortho(-0.5f * W, +0.5f * W, +0.5f * H, -0.5f * H, -10000.0f, 10000.0f);
-    model = glm::translate(glm::mat4(1.0f), transform);
-    transform = glm::vec3(-0.5f * W, -0.5f * H, 0.0f);
-    mvpMatrix = ortho * model;
 }
 
 }

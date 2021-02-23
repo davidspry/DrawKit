@@ -8,6 +8,7 @@
 #include "Shader.hpp"
 #include "Renderer.hpp"
 #include "GlobalInterface.hpp"
+#include "ModelViewProjectionMatrix.hpp"
 
 namespace DrawKit {
 
@@ -17,6 +18,13 @@ public:
      OpenGLRenderer();
     ~OpenGLRenderer();
     
+// MARK: - INITIALISATION
+
+protected:
+    void initialise() override;
+    void createDefaultShaders();
+    void createDefaultMatrix();
+
 public:
     void destroy() override;
     
@@ -35,7 +43,12 @@ public:
 // MARK: - TRANSFORM
 
 public:
-    void translate(const UIPoint<float> & xyz) override;
+    void popMatrix()  override;
+    void pushMatrix() override;
+
+public:
+    void scale(float x, float y, float z) override;
+    void rotate(float radians, float x, float y, float z) override;
     void translate(float x, float y, float z = 0.0f) override;
     
 // MARK: - CLEAR SCREEN
@@ -56,28 +69,17 @@ public:
 // MARK: - DRAWING PRIMITIVES
 
 public:
-    void drawCircle(float x, float y, float r, uint16_t segments, const Colour & colour) override;
     void drawCircle(float x, float y, float z, float r, uint16_t segments, const Colour & colour) override;
+
+    void drawCircleStroke(float x, float y, float z, float r, float strokeWidth, uint16_t segments, const Colour & colour) override;
     
-    void drawEllipse(float x, float y, float w, float h, uint16_t segments, const Colour & colour) override;
     void drawEllipse(float x, float y, float z, float w, float h, uint16_t segments, const Colour & colour) override;
     
-    void drawRectangle(float x, float y, float w, float h, const Colour & colour) override;
     void drawRectangle(float x, float y, float z, float w, float h, const Colour & colour) override;
     
-    void drawRectangleStroke(float x, float y, float w, float h, float strokeWidth, const Colour & colour) override;
+    void drawRectangleStroke(float x, float y, float z, float w, float h, float strokeWidth, const Colour & colour) override;
     
-    void drawTriangle(float xa, float ya, float xb, float yb, float xc, float yc, const Colour & colour) override;
-    void drawTriangle(float xa, float ya, float za,
-                      float xb, float yb, float zb,
-                      float xc, float yc, float zc, const Colour & colour) override;
-
-// MARK: - INITIALISATION
-
-protected:
-    void initialise() override;
-    void createDefaultShaders();
-    void createDefaultTransform();
+    void drawTriangle(float xa, float ya, float za, float xb, float yb, float zb, float xc, float yc, float zc, const Colour & colour) override;
     
 private:
     Shader * flatShader;
@@ -87,10 +89,8 @@ private:
     uint32_t ibo;
     
 private:
-    glm::mat4 ortho;
-    glm::mat4 model;
-    glm::mat4 mvpMatrix;
-    glm::vec3 transform;
+    ModelViewProjectionMatrix defaultMatrix;
+    std::stack <ModelViewProjectionMatrix> matrices;
 };
 
 }

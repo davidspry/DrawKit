@@ -6,5 +6,6 @@
 
 #include "UISize.h"
 #include "UIPoint.h"
+#include "UIMargins.h"
 
 #endif

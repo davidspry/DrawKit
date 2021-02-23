@@ -65,7 +65,7 @@ Renderer * ApplicationManager::createRenderer(const RendererType & renderer)
         default: break;
     }
 
-    DK_FATAL_ERROR("GlobalInterface", "Undefined RendererType.");
+    DK_FATAL_ERROR("ApplicationManager", "Undefined RendererType.");
 }
 
 Renderer * const ApplicationManager::getRenderer() const
@@ -85,12 +85,13 @@ Window * const ApplicationManager::getPlatformWindow() const
 
 void ApplicationManager::matchDesiredFrameRate()
 {
-    const auto time = glfwGetTime();
+    auto const time = glfwGetTime();
 
     if (time - frameStartTime < frameDeltaTime)
     {
-        const auto milliseconds = 1000.0f * (frameDeltaTime - (time - frameStartTime));
-        const auto sleep = std::chrono::milliseconds((int) milliseconds);
+        const auto milliseconds = frameDeltaTime - (time - frameStartTime);
+        const auto nanoseconds  = 1'000'000 * milliseconds;
+        const auto sleep = std::chrono::nanoseconds((int) nanoseconds);
         std::this_thread::sleep_for(sleep);
     }
 }

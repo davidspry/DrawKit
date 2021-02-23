@@ -22,10 +22,10 @@ public:
     /// @param width   The desired width of the triangle's bounding box.
     /// @param height The desired height of the triangle's bounding box.
     
-    Triangle(const int32_t x = 0,
-             const int32_t y = 0,
-             const int32_t width  = 100,
-             const int32_t height = 100);
+    Triangle(const float x = 0.0f,
+             const float y = 0.0f,
+             const float width  = 100.0f,
+             const float height = 100.0f);
 
     /// @brief Create a triangle with the given vertices.
     /// @param vertices The desired triangle vertices.
@@ -48,14 +48,14 @@ public:
 // MARK: - UIComponent Overrides
 
 public:
-    void setSizeFromOrigin(int32_t width, int32_t height) override;
-    void setSizeFromOrigin(const UISize<uint32_t> & size) override;
-    void setSizeFromCentre(int32_t width, int32_t height) override;
-    void setSizeFromCentre(const UISize<uint32_t> & size) override;
-    void setPositionWithOrigin(int32_t x, int32_t y, int32_t z) override;
-    void setPositionWithOrigin(const UIPoint<int32_t> & xyz) override;
-    void setPositionWithCentre(int32_t x, int32_t y, int32_t z) override;
-    void setPositionWithCentre(const UIPoint<int32_t> & xyz) override;
+    void setSizeFromOrigin(float width, float height) override;
+    void setSizeFromOrigin(const UISize<float> & size) override;
+    void setSizeFromCentre(float width, float height) override;
+    void setSizeFromCentre(const UISize<float> & size) override;
+    void setPositionWithOrigin(float x, float y, float z) override;
+    void setPositionWithOrigin(const UIPoint<float> & xyz) override;
+    void setPositionWithCentre(float x, float y, float z) override;
+    void setPositionWithCentre(const UIPoint<float> & xyz) override;
     
 protected:
     Vertices vertices;

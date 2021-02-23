@@ -87,6 +87,12 @@ public:
     /// @param handle The uniform's name.
     /// @param value The desired value.
     
+    void setUniform(std::string_view handle, const glm::vec3 & value);
+    
+    /// @brief Set the value of the given uniform.
+    /// @param handle The uniform's name.
+    /// @param value The desired value.
+    
     void setUniform(std::string_view handle, const glm::mat4 & value);
     
 // MARK: - SHADER CREATION
