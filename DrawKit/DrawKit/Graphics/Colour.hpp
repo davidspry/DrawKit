@@ -62,7 +62,7 @@ public:
     /// @param contrast The desired contrast between each shade.
     
     const static Colour shade(const Colour & colour, int16_t index, uint8_t contrast);
-    
+
 public:
     const static Colour lightBlack;
     const static Colour offWhite;

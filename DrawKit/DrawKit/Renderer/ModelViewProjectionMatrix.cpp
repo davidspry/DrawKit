@@ -12,57 +12,74 @@ ModelViewProjectionMatrix::ModelViewProjectionMatrix()
     view   = identity;
     model  = identity;
     matrix = identity;
-    position   = identity;
+    origin = identity;
+    scaled = identity;
     projection = identity;
 }
 
-const glm::mat4 & ModelViewProjectionMatrix::getMVPMatrix()
+const glm::mat4 & ModelViewProjectionMatrix::getMVPMatrix() const
 {
     return matrix;
 }
 
-void ModelViewProjectionMatrix::setProjectionBounds(uint32_t width, uint32_t height)
+const glm::mat4 & ModelViewProjectionMatrix::getViewMatrix() const
 {
-    if (windowSize.w != width ||
-        windowSize.h != height)
-    {
-        windowSize.w = width;
-        windowSize.h = height;
-        useOrthographicProjection();
-    }
+    return view;
 }
 
-void ModelViewProjectionMatrix::useOrthographicProjection()
+const glm::mat4 & ModelViewProjectionMatrix::getModelMatrix() const
 {
-    const float W = windowSize.w;
-    const float H = windowSize.h;
+    return model;
+}
 
-    projection = glm::ortho(-0.5f * W, +0.5f * W, +0.5f * H, -0.5f * H, -10000.0f, +10000.0f);
-    position   = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f * W, -0.5f * H, 0.0f));
+const glm::mat4 & ModelViewProjectionMatrix::getProjectionMatrix() const
+{
+    return projection;
+}
 
+void ModelViewProjectionMatrix::setViewMatrix(const glm::mat4 & matrix)
+{
+    view = matrix;
+    
     update();
 }
 
-void ModelViewProjectionMatrix::usePerspectiveProjection(float fieldOfView)
+void ModelViewProjectionMatrix::setModelMatrix(const glm::mat4 & matrix)
 {
-    const float W = windowSize.w;
-    const float H = windowSize.h;
-    const float aspectRatio = W / H;
+    model = matrix;
+    
+    update();
+}
 
-    projection = glm::perspective(fieldOfView, aspectRatio, 1.0f, 950.0f);
-    position   = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f * W, -0.5f * H, 0.0f));
+void ModelViewProjectionMatrix::setProjectionMatrix(const glm::mat4 & matrix)
+{
+    projection = matrix;
+    
+    update();
+}
+
+void ModelViewProjectionMatrix::setTranslation(float x, float y, float z)
+{
+    view = glm::translate(glm::mat4(1.0f), {x, y, z});
 
     update();
 }
 
 void ModelViewProjectionMatrix::scale(float x, float y, float z)
 {
-    projection = glm::scale(projection, {x, y, z});
+    scaled = glm::scale(scaled, {x, y, z});
     
     update();
 }
 
-void ModelViewProjectionMatrix::rotate(float radians, float x, float y, float z)
+void ModelViewProjectionMatrix::rotateModel(float radians, float x, float y, float z)
+{
+    model = glm::rotate(model, radians, {x, y, z});
+
+    update();
+}
+
+void ModelViewProjectionMatrix::rotateProjection(float radians, float x, float y, float z)
 {
     projection = glm::rotate(projection, radians, {x, y, z});
 
@@ -71,14 +88,14 @@ void ModelViewProjectionMatrix::rotate(float radians, float x, float y, float z)
 
 void ModelViewProjectionMatrix::translate(float x, float y, float z)
 {
-    model = glm::translate(glm::mat4(1.0f), {x, y, z});
+    view = glm::translate(view, {x, y, z});
 
     update();
 }
 
 void ModelViewProjectionMatrix::update()
 {
-    matrix = projection * view * position * model;
+    matrix = projection * scaled * view * model * origin;
 }
 
 }

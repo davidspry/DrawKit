@@ -8,7 +8,7 @@
 
 AUTHOR    David Spry
 VERSION   0.0.0 - 0.1 - A
-MODIFIED  23 February 2021
+MODIFIED  25 February 2021
 */
 
 #ifndef DK_INCLUDED_H
@@ -16,9 +16,9 @@ MODIFIED  23 February 2021
 
 #include "dk.pch"
 
-#include "UITypes.h"
 #include "UIPrimitives.h"
 #include "GlobalInterface.hpp"
+#include "OrthographicCamera.hpp"
 
 #endif
 
@@ -33,8 +33,3 @@ MODIFIED  23 February 2021
 //   7. Add batch class system for batch rendering arbitrary shapes/geometry
 //   8. Consider creating wavetables for fast sinusoidal functions
 //   9. Add sound classes -- oscillators, envelopes, etc.
-
-// ISOMETRIC CAMERA ROTATIONS
-// ==========================
-//    ortho = glm::rotate(ortho, glm::radians(35.264f), glm::vec3(1.0f, 0.0f, 0.0f));
-//    ortho = glm::rotate(ortho, glm::radians(45.000f), glm::vec3(0.0f, 0.0f, 1.0f));

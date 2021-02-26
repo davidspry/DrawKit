@@ -14,16 +14,21 @@ public:
     ModelViewProjectionMatrix();
     
 public:
-    const glm::mat4 & getMVPMatrix();
-    
+    const glm::mat4 & getMVPMatrix() const;
+    const glm::mat4 & getViewMatrix() const;
+    const glm::mat4 & getModelMatrix() const;
+    const glm::mat4 & getProjectionMatrix() const;
+
 public:
-    void useOrthographicProjection();
-    void usePerspectiveProjection(float fieldOfView);
-    void setProjectionBounds(uint32_t width, uint32_t height);
+    void setViewMatrix(const glm::mat4 & matrix);
+    void setModelMatrix(const glm::mat4 & matrix);
+    void setProjectionMatrix(const glm::mat4 & matrix);
+    void setTranslation(float x, float y, float z);
 
 public:
     void scale(float x, float y, float z);
-    void rotate(float radians, float x, float y, float z);
+    void rotateModel(float radians, float x, float y, float z);
+    void rotateProjection(float radians, float x, float y, float z);
     void translate(float x, float y, float z);
     
 private:
@@ -33,11 +38,9 @@ private:
     glm::mat4 matrix;
     glm::mat4 view;
     glm::mat4 model;
-    glm::mat4 position;
+    glm::mat4 scaled;
+    glm::mat4 origin;
     glm::mat4 projection;
-    
-private:
-    UISize<uint32_t> windowSize;
 };
 
 }

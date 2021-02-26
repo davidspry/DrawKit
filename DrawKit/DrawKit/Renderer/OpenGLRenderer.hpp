@@ -8,7 +8,6 @@
 #include "Shader.hpp"
 #include "Renderer.hpp"
 #include "GlobalInterface.hpp"
-#include "ModelViewProjectionMatrix.hpp"
 
 namespace DrawKit {
 
@@ -45,6 +44,7 @@ public:
 public:
     void popMatrix()  override;
     void pushMatrix() override;
+    void pushMatrix(const ModelViewProjectionMatrix & matrix) override;
 
 public:
     void scale(float x, float y, float z) override;
@@ -89,8 +89,11 @@ private:
     uint32_t ibo;
     
 private:
-    ModelViewProjectionMatrix defaultMatrix;
     std::stack <ModelViewProjectionMatrix> matrices;
+    
+private:
+    ModelViewProjectionMatrix defaultMatrix;
+    UISize <float> windowSize;
 };
 
 }

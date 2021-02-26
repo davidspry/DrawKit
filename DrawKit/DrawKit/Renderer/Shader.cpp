@@ -94,6 +94,8 @@ uint32_t Shader::compileShader(GLenum type, const std::string & shaderSource)
     GLuint const   shader = glCreateShader(type);
     GLchar const * source = shaderSource.c_str();
 
+    DK_ASSERT(strcmp(source, "") != 0, "The given shader source is empty.");
+
     glShaderSource (shader, 1, &source, 0);
     glCompileShader(shader);
 

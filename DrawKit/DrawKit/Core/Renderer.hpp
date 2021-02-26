@@ -62,6 +62,11 @@ public:
 
     virtual void pushMatrix() = 0;
     
+    /// @brief Push the given matrix onto the matrix stack.
+    /// @param matrix The matrix to be pushed onto the matrix stack.
+    
+    virtual void pushMatrix(const ModelViewProjectionMatrix & matrix) = 0;
+
     /// @brief Pop the current matrix from the matrix stack.
 
     virtual void popMatrix() = 0;

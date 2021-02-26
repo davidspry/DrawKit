@@ -33,7 +33,7 @@ inline static void DK_ASSERT(const bool & statement, A && ...arguments)
 {
     if (statement) return;
     
-    DK_FATAL_ERROR("ERROR 00A", arguments...);
+    DK_FATAL_ERROR("Assertion Error", arguments...);
 }
 
 template <typename T>

@@ -44,8 +44,13 @@ void OpenGLRenderer::createDefaultMatrix()
     const float W = static_cast<float>(getWindowWidth());
     const float H = static_cast<float>(getWindowHeight());
 
-    defaultMatrix.setProjectionBounds(W, H);
-    defaultMatrix.useOrthographicProjection();
+    windowSize.w = W;
+    windowSize.h = H;
+
+    glm::mat4 const ortho = glm::ortho(-0.5f * W, 0.5f * W, 0.5f * H, -0.5f * H, -10000.0f, 10000.0f);
+
+    defaultMatrix.setProjectionMatrix(ortho);
+    defaultMatrix.setTranslation(-0.5f * W, -0.5f * H, 0.0f);
 }
 
 void OpenGLRenderer::destroy()
@@ -69,10 +74,20 @@ void OpenGLRenderer::beginRender()
     const float W = static_cast<float>(getWindowWidth());
     const float H = static_cast<float>(getWindowHeight());
 
-    defaultMatrix.setProjectionBounds(W, H);
+    if (!(windowSize.w == W && windowSize.h == H))
+    {
+        glm::mat4 const ortho =
+            glm::ortho(-0.5f * W, 0.5f * W, 0.5f * H, -0.5f * H, -10000.0f, 10000.0f);
+
+        defaultMatrix.setProjectionMatrix(ortho);
+        defaultMatrix.setTranslation(-0.5f * W, -0.5f * H, 0.0f);
+        
+        windowSize.w = W;
+        windowSize.h = H;
+    }
 
     matrices.emplace(defaultMatrix);
-
+    
     glViewport(0, 0, W, H);
 
     clear();
@@ -80,7 +95,7 @@ void OpenGLRenderer::beginRender()
 
 void OpenGLRenderer::complRender()
 {
-    popMatrix();
+    matrices.pop();
 }
 
 // MARK: - RENDER SETTINGS
@@ -111,6 +126,11 @@ void OpenGLRenderer::pushMatrix()
     matrices.emplace(matrix);
 }
 
+void OpenGLRenderer::pushMatrix(const ModelViewProjectionMatrix & matrix)
+{
+    matrices.push(matrix);
+}
+
 void OpenGLRenderer::popMatrix()
 {
     matrices.pop();
@@ -123,7 +143,7 @@ void OpenGLRenderer::scale(float x, float y, float z)
 
 void OpenGLRenderer::rotate(float radians, float x, float y, float z)
 {
-    matrices.top().rotate(radians, x, y, z);
+    matrices.top().rotateModel(radians, x, y, z);
 }
 
 void OpenGLRenderer::translate(float x, float y, float z)

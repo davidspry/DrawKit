@@ -7,6 +7,8 @@ local ROOTDIR = "/Users/davidspry/Library/Mobile Documents/com~apple~CloudDocs/D
 -- Define the project's directory.
 local PROJDIR = ROOTDIR .. "Projects/" .. PROJECT .. "/"
 
+-- #MARK
+-- =====
 os.execute("mkdir -p -v \"" .. PROJDIR .. "\"src")
 os.execute("cp \"" .. ROOTDIR .. "Templates/Project/main.cpp\" \"" .. PROJDIR .. "src/main.cpp\"")
 os.execute("cp \"" .. ROOTDIR .. "Templates/Project/Sketch.hpp\" \"" .. PROJDIR .. "src/Sketch.hpp\"")
@@ -54,8 +56,10 @@ files
 	(ROOTDIR .. "DrawKit/DrawKit/**.hpp"),
 	(ROOTDIR .. "DrawKit/DrawKit/**.cpp"),
 	(ROOTDIR .. "DrawKit/DrawKit/**.pch"),
+
 	(ROOTDIR .. "DrawKit/DrawKit/**.frag"),
 	(ROOTDIR .. "DrawKit/DrawKit/**.vert"),
+	(ROOTDIR .. "DrawKit/DrawKit/**.geom"),
 	
 	(ROOTDIR .. "DrawKit/vendor/glad/src/**.c"),
 	(ROOTDIR .. "DrawKit/vendor/glad/include/**.h")
@@ -78,11 +82,20 @@ links
 	"AudioToolbox.framework"
 }
 
-filter         "system:macosx"
-defines        "GL_SILENCE_DEPRECATION"
+filter      "system:macosx"
+defines     "GL_SILENCE_DEPRECATION"
 
-filter         "configurations:Debug"
-symbols        "On"
+filter      "files:**.frag"
+buildaction "Embed"
 
-filter         "configurations:Release"
-optimize       "Speed"
+filter      "files:**.vert" 
+buildaction "Embed" 
+
+filter      "files:**.geom" 
+buildaction "Embed"
+
+filter      "configurations:Debug"
+symbols     "On"
+
+filter      "configurations:Release"
+optimize    "Speed"
