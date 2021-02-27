@@ -193,16 +193,16 @@ void OpenGLRenderer::drawPath(const std::vector<vertex_colour_t> & vertices, flo
 {
     if (vertices.empty()) return;
     
-    auto const VERTICES = vertices.size();
+    auto const VERTICES = static_cast<index_t>(vertices.size());
     auto const INDICES  = (VERTICES - static_cast<int>(!pathIsClosed)) * 4;
-    int  const LAST     = (VERTICES - 1);
+    auto const LAST     = (VERTICES - 1);
 
     index_t indices [INDICES];
     
     indices[0] = pathIsClosed ? VERTICES - 1 : 0;
     indices[1] = 0;
     indices[2] = 1;
-    indices[3] = std::min(2, LAST);
+    indices[3] = std::min(2, (int) LAST);
 
     if (pathIsClosed)
     {
@@ -214,10 +214,10 @@ void OpenGLRenderer::drawPath(const std::vector<vertex_colour_t> & vertices, flo
 
     for (size_t k = 1; k < VERTICES - 1; ++k)
     {
-        indices[k * 4 + 0] = k - 1;
-        indices[k * 4 + 1] = k - 0;
-        indices[k * 4 + 2] = k + 1;
-        indices[k * 4 + 3] = (k + 2) % VERTICES;
+        indices[k * 4 + 0] = static_cast<index_t>(k - 1);
+        indices[k * 4 + 1] = static_cast<index_t>(k - 0);
+        indices[k * 4 + 2] = static_cast<index_t>(k + 1);
+        indices[k * 4 + 3] = static_cast<index_t>((k + 2) % VERTICES);
     }
 
     const float W = static_cast<float>(getWindowWidth());

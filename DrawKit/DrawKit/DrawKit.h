@@ -25,7 +25,6 @@ MODIFIED  25 February 2021
 // TASKS & IDEAS
 // =============
 //   1. Store normalised triangle vertices in Triangle. Compute 'pixel-space' values when drawn.
-//   2. Move to floating point positions for components.
 //   3. Add 'easing' (i.e., ease-in, ease-out) for animation purposes
 //   4. Add utilities (colour schemes, value transition, window options, etc.)
 //   5. Add libsoundio convenience classes for real-time sound
