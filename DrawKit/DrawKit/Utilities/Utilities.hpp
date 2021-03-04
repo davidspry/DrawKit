@@ -6,18 +6,18 @@
 
 #include "dk.pch"
 
-template <typename M, typename ...A>
-inline static void DK_LOG(M && module, A && ...arguments)
+template <typename ...A>
+inline static void DK_PRINT(A && ...arguments)
 {
-    std::cout
-    << "["
-    << std::left << std::setw(15)
-    << std::forward<M>(module)
-    << "] ";
+    ((std::cout << std::forward<A>(arguments) << " "), ...) << std::endl;
+}
 
-    ((std::cout << std::forward<A>(arguments) << " "), ...);
-    
-    std::cout << std::endl;
+template <typename ...A>
+inline static void DK_LOG(const std::string & module, A && ...arguments)
+{
+    std::cout << "[" << std::left << std::setw(15) << module << "] ";
+
+    DK_PRINT(arguments...);
 }
 
 template <typename M, typename ...A>
@@ -65,6 +65,16 @@ template <typename T>
 [[nodiscard]] inline static T midpoint(T first, T second)
 {
     return first + (second - first) * static_cast<T>(0.5);
+}
+
+namespace DrawKit   {
+namespace WaveTable {
+
+float sine(float x);
+
+float cosine(float x);
+
+}
 }
 
 #endif

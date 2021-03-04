@@ -4,7 +4,9 @@
 #ifndef WAVETABLE_SINE_H
 #define WAVETABLE_SINE_H
 
-constexpr std::array<float, 512> wt_sine =
+constexpr unsigned int wt_sine_length = 512;
+
+constexpr std::array<float, wt_sine_length> wt_sine =
 {
     0.000000000000000,
     0.012271538285720,

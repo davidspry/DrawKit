@@ -9,6 +9,8 @@
 #define HALF_PI 1.570796326790
 #define QRTR_PI 0.785398163397
 
+#include "Wavetables/WavetableSine.h"
+
 /// @brief Constants defining 3D axes.
 
 enum class Axis { X, Y, Z };
