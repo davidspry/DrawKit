@@ -2,7 +2,7 @@
 local PROJECT = "DrawKit"
 
 -- Define DrawKit's root directory.
-local ROOTDIR = "/Users/davidspry/Library/Mobile Documents/com~apple~CloudDocs/Development/Creative Frameworks/DrawKit/"
+local ROOTDIR = "/Users/davidspry/Library/Mobile Documents/com~apple~CloudDocs/Development/Frameworks/DrawKit/"
 
 -- Define the project's directory.
 local PROJDIR = ROOTDIR .. "Projects/" .. PROJECT .. "/"
@@ -20,7 +20,7 @@ workspace      (PROJECT)
 location       (PROJDIR)
 system         "macosx"
 systemversion  "10.15"
-architecture   "x64"
+architecture   "x86_64"
 configurations { "Debug", "Release" }
 -- =====================
 
@@ -68,7 +68,7 @@ files
 libdirs
 {
 	(ROOTDIR .. "DrawKit/vendor/libsoundio/lib-macos"),
-	(ROOTDIR .. "DrawKit/vendor/glfw/lib-macos")
+	(ROOTDIR .. "DrawKit/vendor/glfw/lib-macos-intel")
 }
 
 links
